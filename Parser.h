@@ -38,7 +38,7 @@ namespace Parser {
         return x;
     }
 
-    int registerToInt(std::string reg){
+    int registerToInt(std::string reg, int n){
         int x;
         if (reg == "A"){
             x = 0x0;
@@ -53,13 +53,13 @@ namespace Parser {
         } else if (reg == "PC"){
             x = 0x5;
         } else {
-            std::cout << "Invalid register" << std::endl;
+            std::cout << "Syntax error on line " << n << ": Invalid register" << std::endl;
             exit(-1);
         }
         return x;
     }
 
-    int ALUToInt(std::string code){
+    int ALUToInt(std::string code, int n){
         int x;
         if (code == "ADD"){
             x = 0x0;
@@ -72,13 +72,13 @@ namespace Parser {
         } else if (code == "XOR"){
             x = 0x4;
         } else {
-            std::cout << "Invalid operation" << std::endl;
+            std::cout << "Syntax error on line " << n << ": Invalid operation" << std::endl;
             exit(-1);
         }
         return x;
     }
 
-    OPCODE parse(std::string str){
+    OPCODE parse(std::string str, int line){
         OPCODE o;
         std::string toParse = genParsable(str);
         std::string operand, code;
@@ -110,7 +110,7 @@ namespace Parser {
             o.operand = operandToInt(operand);
         } else if (code == "LDS"){
             o.funccode = 3;
-            o.operand = ALUToInt(operand);
+            o.operand = ALUToInt(operand, line);
         } else if (code == "LDMAR"){
             o.funccode = 4;
             o.operand = operandToInt(operand);
@@ -119,10 +119,10 @@ namespace Parser {
             o.operand = operandToInt(operand);
         } else if (code == "STOR"){
             o.funccode = 6;
-            o.operand = registerToInt(operand);
+            o.operand = registerToInt(operand, line);
         } else if (code == "RDR"){
             o.funccode = 7;
-            o.operand = registerToInt(operand);
+            o.operand = registerToInt(operand, line);
         } else if (code == "JMP"){
             o.funccode = 8;
             o.operand = operandToInt(operand);
@@ -130,6 +130,7 @@ namespace Parser {
             o.funccode = 9;
             o.operand = operandToInt(operand);
         } else {
+            std::cout << "Syntax error on line " << line << ": Invalid mnemonic" << std::endl;
             exit(-1);
         }
 

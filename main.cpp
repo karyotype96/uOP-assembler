@@ -48,13 +48,16 @@ int main()
 
     std::string outputString;
 
+    int lineNum = 0;
+
     std::ifstream inputfile;
     inputfile.open("source.lg", std::fstream::out | std::fstream::in | std::fstream::app);
 
     if (inputfile.is_open()){
         while (true){
             inputfile >> buffer;
-            opcodes.push_back(Parser::parse(buffer));
+            opcodes.push_back(Parser::parse(buffer, lineNum));
+            lineNum++;
             if (inputfile.eof()) break;
         }
     }
